@@ -1,0 +1,26 @@
+# Virtual Environment
+./venv/
+venv/
+ENV/
+env/
+
+# Data and Storage (Keep your raw data local)
+./data/
+data/
+*.db
+*.csv
+*.jsonl
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment Variables & Secrets
+.env
+.env.local
+
+# IDEs and System Files
+.vscode/
+.idea/
+.DS_Store
