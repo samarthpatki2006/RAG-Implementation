@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from src.simple_rag import rag_simple
-
+from src.enhanced_rag import rag_enhanced
 load_dotenv()
 
 llm = ChatGroq(
@@ -24,8 +24,8 @@ if __name__ == "__main__":
     embeds=embedding.embed_chunks(chunks)
     store.add_documents(documents=chunks,embeddings=embeds)
 
-    query:str="What is the capital of Zorblax?"
-    results = retriever.retrieve(query=query,top_k=5,score_threshold=0.1)
+    query:str="Elaborate the topics under operating systems course"
+    results = retriever.retrieve(query=query,top_k=1,score_threshold=0.4)
 
     # for result in results:
     #     print(f"\nRank: {result['rank']}")
@@ -33,5 +33,5 @@ if __name__ == "__main__":
     #     print(f"Source: {result['metadata'].get('source', 'Unknown')}")
     #     print(f"Content:\n{result['content']}")
 
-    response=rag_simple(query,results,llm,top_k=5)
+    response=rag_enhanced(query,results,llm,top_k=1,return_context=True)
     print(response)
