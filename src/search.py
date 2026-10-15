@@ -10,7 +10,6 @@ class RAGRetriever:
     print(f"Retrieveing documents for the query {query}")
     print(f"Top k: {top_k}, score_threshold: {score_threshold}")
     query_embeddings=self.embedding_manager.embed_texts([query])
-    print(query_embeddings)
 
     try:
       results=self.vector_store.collection.query(
