@@ -8,9 +8,15 @@ from langchain_community.document_loaders import (
     UnstructuredExcelLoader,
     JSONLoader
 )
-def load_all_documents(data_dir:str)->List[Any]:
-  data_path=Path(data_dir).resolve()
+from langchain_core.documents import Document
+
+def load_all_documents(data_dir:str)->List[Document]:
+  data_path=Path(data_dir).expanduser().resolve()
   print("Data Path: ",data_path)
+
+  if not data_path.is_dir():
+    raise NotADirectoryError(f"Invalid data directory: {data_path}")
+  
   documents=[]
 
   #PDF
@@ -25,6 +31,7 @@ def load_all_documents(data_dir:str)->List[Any]:
       documents.extend(loaded)
     except Exception as e:
       print(f"Error, Failed to load PDF {pdf_file}: {e}")
+      raise
   
   # TXT files
   txt_files = list(data_path.glob('**/*.txt'))
@@ -38,6 +45,7 @@ def load_all_documents(data_dir:str)->List[Any]:
       documents.extend(loaded)
     except Exception as e:
       print(f"[ERROR] Failed to load TXT {txt_file}: {e}")
+      raise
 
   # CSV files
   csv_files = list(data_path.glob('**/*.csv'))
@@ -51,6 +59,7 @@ def load_all_documents(data_dir:str)->List[Any]:
       documents.extend(loaded)
     except Exception as e:
       print(f"[ERROR] Failed to load CSV {csv_file}: {e}")
+      raise
 
   # Excel files
   xlsx_files = list(data_path.glob('**/*.xlsx'))
@@ -64,6 +73,7 @@ def load_all_documents(data_dir:str)->List[Any]:
       documents.extend(loaded)
     except Exception as e:
       print(f"[ERROR] Failed to load Excel {xlsx_file}: {e}")
+      raise
 
   # Word files
   docx_files = list(data_path.glob('**/*.docx'))
@@ -77,6 +87,7 @@ def load_all_documents(data_dir:str)->List[Any]:
       documents.extend(loaded)
     except Exception as e:
       print(f"[ERROR] Failed to load Word {docx_file}: {e}")
+      raise
 
   # JSON files
   json_files = list(data_path.glob('**/*.json'))
@@ -84,12 +95,17 @@ def load_all_documents(data_dir:str)->List[Any]:
   for json_file in json_files:
     print(f"[DEBUG] Loading JSON: {json_file}")
     try:
-      loader = JSONLoader(str(json_file),jq_schema=".messages[].content")
+      loader = JSONLoader(
+        file_path=str(json_file),
+        jq_schema=".",
+        text_content=False
+      )
       loaded = loader.load()
       print(f"[DEBUG] Loaded {len(loaded)} JSON docs from {json_file}")
       documents.extend(loaded)
     except Exception as e:
       print(f"[ERROR] Failed to load JSON {json_file}: {e}")
+      raise
 
   print(f"[DEBUG] Total loaded documents: {len(documents)}")
   return documents

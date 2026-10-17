@@ -1,5 +1,3 @@
-from langchain_groq import ChatGroq
-
 def rag_simple(query, results, llm, top_k=3):
   if not query or not query.strip():
     return "Please provide a question"

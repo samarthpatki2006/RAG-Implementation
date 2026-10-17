@@ -1,8 +1,6 @@
 import os
 import numpy as np
 from typing import List, Any
-from sentence_transformers import SentenceTransformer
-from src.embeddings import EmbeddingPipeline
 import chromadb
 import uuid
 class VectorStore:
@@ -49,8 +47,8 @@ class VectorStore:
         metadatas=metadatas,
         documents=documents_text
       )
-      print(f"Successfully added f{len(documents)} documents to vector store")
+      print(f"Successfully added {len(documents)} documents to vector store")
       print(f"Total document in collection: {self.collection.count()}")
     except Exception as e:
-      print("Error adding documents to vector store")
+      print(f"Error adding documents to vector store: {e}")
       raise

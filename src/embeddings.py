@@ -5,6 +5,10 @@ import numpy as np
 
 class EmbeddingPipeline:
   def __init__(self,model_name:str="all-MiniLM-L6-v2",chunk_size:int=1000,chunk_overlap:int=200):
+    if chunk_size <= 0:
+      raise ValueError("chunk_size must be greater than zero")
+    if not 0 <= chunk_overlap < chunk_size:
+      raise ValueError("chunk_overlap must be between 0 and chunk_size - 1")
     self.chunk_size=chunk_size
     self.chunk_overlap=chunk_overlap
     self.model=SentenceTransformer(model_name)

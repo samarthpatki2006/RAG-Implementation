@@ -2,7 +2,7 @@ from src.data_loader import load_all_documents
 from src.vector_store import VectorStore
 from src.embeddings import EmbeddingPipeline
 from src.search import RAGRetriever
-import os
+from typing import List
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from src.simple_rag import rag_simple
@@ -24,14 +24,15 @@ if __name__ == "__main__":
     embeds=embedding.embed_chunks(chunks)
     store.add_documents(documents=chunks,embeddings=embeds)
 
-    query:str="Elaborate the topics under operating systems course"
-    results = retriever.retrieve(query=query,top_k=1,score_threshold=0.4)
+    queries:List[str]=["Elaborate the topics under operating systems course"]
+    retrieved_results = retriever.retrieve(queries, top_k=3)
 
-    # for result in results:
-    #     print(f"\nRank: {result['rank']}")
-    #     print(f"Similarity: {result['similarity_score']:.4f}")
-    #     print(f"Source: {result['metadata'].get('source', 'Unknown')}")
-    #     print(f"Content:\n{result['content']}")
+    for query, query_results in zip(queries, retrieved_results):
+      answer = rag_simple(query, query_results, llm)
+      print(f"Question: {query}")
+      print(f"Answer: {answer}\n")
 
-    response=rag_enhanced(query,results,llm,top_k=1,return_context=True)
-    print(response)
+    # for query, query_results in zip(queries, retrieved_results):
+    #   answer = rag_enhanced(query, query_results, llm)
+    #   print(f"Question: {query}")
+    #   print(f"Answer: {answer}\n")
